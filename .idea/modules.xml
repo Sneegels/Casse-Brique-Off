@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Casse-Brique-Off.iml" filepath="$PROJECT_DIR$/Casse-Brique-Off.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Casse-Brique-Off.iml" filepath="$PROJECT_DIR$/.idea/Casse-Brique-Off.iml" />
     </modules>
   </component>
 </project>
