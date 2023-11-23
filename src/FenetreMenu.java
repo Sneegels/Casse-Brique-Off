@@ -68,7 +68,7 @@ class FenetreMenuPanel extends JPanel implements ActionListener {
 
         button2 = createButton("Charger une Partie", KeyEvent.VK_2, "Ctrl+2");
 
-        button3 = createButton("Partie contre un bot", KeyEvent.VK_3, "Ctrl+3");
+        button3 = createButton("Consulter les règles", KeyEvent.VK_3, "Ctrl+3");
 
         add(Box.createVerticalGlue());
 
