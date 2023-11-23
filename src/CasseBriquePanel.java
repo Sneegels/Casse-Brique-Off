@@ -17,20 +17,20 @@ class CasseBriquePanel extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
 
         balle = new Balle(200, 500, 20, Color.WHITE);
-        briques = creerBriques();
         timer = new Timer(10, this);
         timer.start();
+        briques = creerBriques(getWidth());
     }
 
-    private List<Brique> creerBriques() {
+    private List<Brique> creerBriques(int largeurPanneau) {
         List<Brique> briques = new ArrayList<>();
         int largeurBrique = 80;
         int hauteurBrique = 40;
         int espacement = 5;
         int nombreLignes = 4;
-        int nombreColonnes = 10;
+        int nombreColonnes = 13;
 
-        int offsetX = (getWidth() - (nombreColonnes * (largeurBrique + espacement) - espacement)) / 2;
+        int offsetX = (largeurPanneau - (nombreColonnes * (largeurBrique + espacement) - espacement)) / 2;
         int offsetY = 20;
 
         for (int i = 0; i < nombreLignes; i++) {
@@ -59,21 +59,12 @@ class CasseBriquePanel extends JPanel implements ActionListener {
         while (iterator.hasNext()) {
             Brique brique = iterator.next();
 
-            if (brique.isVisible()) {
-                Rectangle boundingBoxBrique = brique.getRectangle();
+            if (!brique.estTouchee() && brique.isVisible()) {
+                // Gérer la collision entre la balle et la brique
+                balle.collisionBrique(brique);
 
-                if (boundingBoxBalle.intersects(boundingBoxBrique)) {
-                    // La balle touche la brique
-                    // Ajoutez ici toute autre logique de gestion de collision
-
-                    // Inverser le déplacement de la balle (choisissez l'axe en fonction de la collision)
-                    balle.inverserDeplacementX();
-                    balle.inverserDeplacementY();
-
-                    // Marquer la brique comme invisible (ou supprimez-la de la liste si vous préférez)
-                    brique.setVisible(false);
-
-                    // On passe à la brique suivante
+                // Supprimer la brique si elle est touchée
+                if (brique.estTouchee()) {
                     iterator.remove();
                 }
             }
@@ -84,10 +75,12 @@ class CasseBriquePanel extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        briques = creerBriques(); // Recrée les briques à chaque redessin
         balle.afficher(g);
+
         for (Brique brique : briques) {
-            brique.dessiner(g);
+            if (!brique.estTouchee()) {
+                brique.dessiner(g);
+            }
         }
     }
 }

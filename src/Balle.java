@@ -46,4 +46,22 @@ public class Balle {
     public void inverserDeplacementY() {
         dy = -dy;
     }
+
+    public void collisionBrique(Brique brique) {
+        Rectangle boundingBoxBalle = getBounds();
+        Rectangle boundingBoxBrique = brique.getRectangle();
+
+        if (boundingBoxBalle.intersects(boundingBoxBrique)) {
+            // La balle touche la brique
+            // Ajoutez ici toute autre logique de gestion de collision
+
+            // Inverser le déplacement de la balle (choisissez l'axe en fonction de la collision)
+            inverserDeplacementX();
+            inverserDeplacementY();
+
+            // Marquer la brique comme touchée
+            brique.setTouchee(true);
+        }
+    }
+
 }
