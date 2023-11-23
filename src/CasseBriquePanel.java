@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import java.util.Iterator;
 
 class CasseBriquePanel extends JPanel implements ActionListener {
     private Balle balle;
@@ -53,41 +54,32 @@ class CasseBriquePanel extends JPanel implements ActionListener {
 
     private void gestionCollisionBriques() {
         Rectangle boundingBoxBalle = balle.getBounds();
+        Iterator<Brique> iterator = briques.iterator();
 
-        for (Brique brique : briques) {
+        while (iterator.hasNext()) {
+            Brique brique = iterator.next();
+
             if (brique.isVisible()) {
                 Rectangle boundingBoxBrique = brique.getRectangle();
+
                 if (boundingBoxBalle.intersects(boundingBoxBrique)) {
                     // La balle touche la brique
+                    // Ajoutez ici toute autre logique de gestion de collision
 
-                    // Déterminez la direction de la collision (haut, bas, gauche, droite)
-                    int dx = (int) Math.signum(balle.getDeplacementX());
-                    int dy = (int) Math.signum(balle.getDeplacementY());
+                    // Inverser le déplacement de la balle (choisissez l'axe en fonction de la collision)
+                    balle.inverserDeplacementX();
+                    balle.inverserDeplacementY();
 
-                    // Ajustez la position de la balle pour qu'elle ne soit pas à l'intérieur de la brique
-                    if (dx != 0) {
-                        balle.setX(brique.getX() - dx * (balle.getDiametre() / 2 + 1));
-                    }
-                    if (dy != 0) {
-                        balle.setY(brique.getY() - dy * (balle.getDiametre() / 2 + 1));
-                    }
-
-                    // Inversez la direction de la balle dans la direction de la collision
-                    if (dx != 0) {
-                        balle.inverserDeplacementX();
-                    }
-                    if (dy != 0) {
-                        balle.inverserDeplacementY();
-                    }
-
-                    // Masquez la brique
+                    // Marquer la brique comme invisible (ou supprimez-la de la liste si vous préférez)
                     brique.setVisible(false);
 
-                    // Ajoutez ici toute autre logique de gestion de collision
+                    // On passe à la brique suivante
+                    iterator.remove();
                 }
             }
         }
     }
+
 
     @Override
     protected void paintComponent(Graphics g) {
