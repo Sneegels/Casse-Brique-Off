@@ -5,11 +5,16 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JPanel;
 
-class CasseBriquePanel extends JPanel implements ActionListener {
+class CasseBriquePanel extends JPanel implements ActionListener, KeyListener {
     private Balle balle;
     private List<Brique> briques;
     private Timer timer;
+    private boolean enPause;
+    private PausePanel pausePanel;  // Nouveau panneau pour la pause
 
     public CasseBriquePanel() {
         setLayout(null);
@@ -20,6 +25,15 @@ class CasseBriquePanel extends JPanel implements ActionListener {
         timer.start();
         briques = creerBriques();
         centrerBriquesHorizontalement();
+        enPause = false;
+
+        addKeyListener(this);
+        setFocusable(true);
+
+        pausePanel = new PausePanel();
+        pausePanel.setBounds(0, 0, getWidth(), getHeight());
+        pausePanel.setVisible(false);
+        add(pausePanel);
     }
 
     private List<Brique> creerBriques() {
@@ -91,5 +105,29 @@ class CasseBriquePanel extends JPanel implements ActionListener {
                 brique.dessiner(g);
             }
         }
+    }
+
+    public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_ESCAPE) {
+            enPause = !enPause;
+            if (enPause) {
+                timer.stop();
+                pausePanel.setVisible(true);
+            } else {
+                timer.start();
+                pausePanel.setVisible(false);
+            }
+            repaint();
+        }
+    }
+
+    public void keyTyped(KeyEvent e) {
+        // Ne rien faire ici
+    }
+
+    public void keyReleased(KeyEvent e) {
+        // Ne rien faire ici
     }
 }
