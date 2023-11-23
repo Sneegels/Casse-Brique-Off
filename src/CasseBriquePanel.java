@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JPanel;
 import java.util.Iterator;
 
 class CasseBriquePanel extends JPanel implements ActionListener {
@@ -19,10 +18,11 @@ class CasseBriquePanel extends JPanel implements ActionListener {
         balle = new Balle(200, 500, 20, Color.WHITE);
         timer = new Timer(10, this);
         timer.start();
-        briques = creerBriques(getWidth());
+        briques = creerBriques();
+        centrerBriquesHorizontalement();
     }
 
-    private List<Brique> creerBriques(int largeurPanneau) {
+    private List<Brique> creerBriques() {
         List<Brique> briques = new ArrayList<>();
         int largeurBrique = 80;
         int hauteurBrique = 40;
@@ -30,7 +30,7 @@ class CasseBriquePanel extends JPanel implements ActionListener {
         int nombreLignes = 4;
         int nombreColonnes = 13;
 
-        int offsetX = (largeurPanneau - (nombreColonnes * (largeurBrique + espacement) - espacement)) / 2;
+        int offsetX = 750;
         int offsetY = 20;
 
         for (int i = 0; i < nombreLignes; i++) {
@@ -43,6 +43,15 @@ class CasseBriquePanel extends JPanel implements ActionListener {
             }
         }
         return briques;
+    }
+
+    private void centrerBriquesHorizontalement() {
+        int largeurTotaleBriques = briques.get(0).getLargeur() * 13 + 5 * 12; // largeur totale des briques + espacements
+        int offsetX = (getWidth() - largeurTotaleBriques) / 2;
+
+        for (Brique brique : briques) {
+            brique.setX(brique.getX() + offsetX);
+        }
     }
 
     @Override
@@ -71,10 +80,10 @@ class CasseBriquePanel extends JPanel implements ActionListener {
         }
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         balle.afficher(g);
 
         for (Brique brique : briques) {
