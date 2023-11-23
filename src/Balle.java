@@ -66,9 +66,6 @@ public class Balle {
         }
     }
 
-
-
-
     private void ajusterPosition(Brique brique, Rectangle boundingBoxBrique) {
         double overlapX = 0;
         double overlapY = 0;

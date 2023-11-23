@@ -42,9 +42,9 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         int hauteurBrique = 40;
         int espacement = 5;
         int nombreLignes = 4;
-        int nombreColonnes = 13;
+        int nombreColonnes = 14;
 
-        int offsetX = 750;
+        int offsetX = 725;
         int offsetY = 20;
 
         for (int i = 0; i < nombreLignes; i++) {
