@@ -6,10 +6,12 @@ public class Balle {
     private int diametre;
     private Vecteur deplacement;
     private Color couleur;
+    private double facteurAmortissement;
 
     public Balle(int x, int y, int diametre, Color couleur) {
         this.x = x;
         this.y = y;
+        this.facteurAmortissement = 0.98;
         this.diametre = diametre;
         this.couleur = couleur;
         this.deplacement = new Vecteur(5, 5); // Vecteur de déplacement initial
@@ -56,22 +58,14 @@ public class Balle {
                 normal.setY((y + diametre <= brique.getY()) ? -1 : 1);
             }
 
-            // Calculer la composante du vecteur de déplacement parallèle à la surface de la brique
-            double dotProduct = deplacement.dot(normal);
-            Vecteur parallel = normal.mult(dotProduct);
-
-            // Calculer la composante du vecteur de déplacement perpendiculaire à la surface de la brique
-            Vecteur perpendicular = deplacement.subtract(parallel);
-
-            // Inverser la composante perpendiculaire
-            perpendicular.inverser();
-
-            // Mettre à jour le vecteur de déplacement en utilisant les composantes recalculées
-            deplacement = parallel.add(perpendicular);
+            // Calculer le nouveau vecteur de déplacement en utilisant la réflexion du vecteur de déplacement
+            deplacement = deplacement.refleter(normal);
 
             // Marquer la brique comme touchée
             brique.setTouchee(true);
+
+            // Réduire la vitesse après la collision pour éviter les rebonds multiples rapides
+            deplacement = deplacement.mult(facteurAmortissement);
         }
     }
-
 }

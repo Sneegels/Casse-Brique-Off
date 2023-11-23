@@ -36,6 +36,14 @@ public class Vecteur {
         y = -y;
     }
 
+    public Vecteur refleter(Vecteur normal) {
+        // Utilisez la formule de réflexion pour calculer le vecteur réfléchi
+        double dotProduct = this.dot(normal);
+        Vecteur projection = normal.mult(2 * dotProduct);
+        return this.subtract(projection);
+    }
+
+
 
     public double dot(Vecteur other) {
         return x * other.x + y * other.y;
