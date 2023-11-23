@@ -1,12 +1,10 @@
 import java.awt.*;
 
 public class Balle {
-
     private int x;
     private int y;
     private int diametre;
-    private int dx; // changement de position en x
-    private int dy; // changement de position en y
+    private Vecteur deplacement;
     private Color couleur;
 
     public Balle(int x, int y, int diametre, Color couleur) {
@@ -14,20 +12,21 @@ public class Balle {
         this.y = y;
         this.diametre = diametre;
         this.couleur = couleur;
-        this.dx = 5;
-        this.dy = 5;
+        this.deplacement = new Vecteur(5, 5); // Vecteur de déplacement initial
     }
 
     public void deplacer(int largeurPanneau, int hauteurPanneau) {
-        if (x + dx < 0 || x + dx > largeurPanneau - diametre) {
-            dx = -dx;
+        if (x + deplacement.getX() < 0 || x + deplacement.getX() > largeurPanneau - diametre) {
+            // Inverser la composante x du vecteur de déplacement en cas de collision avec les bords horizontaux
+            deplacement.inverserX();
         }
-        if (y + dy < 0 || y + dy > hauteurPanneau - diametre) {
-            dy = -dy;
+        if (y + deplacement.getY() < 0 || y + deplacement.getY() > hauteurPanneau - diametre) {
+            // Inverser la composante y du vecteur de déplacement en cas de collision avec les bords verticaux
+            deplacement.inverserY();
         }
 
-        x += dx;
-        y += dy;
+        x += deplacement.getX();
+        y += deplacement.getY();
     }
 
     public void afficher(Graphics g) {
@@ -39,14 +38,6 @@ public class Balle {
         return new Rectangle(x, y, diametre, diametre);
     }
 
-    public void inverserDeplacementX() {
-        dx = -dx;
-    }
-
-    public void inverserDeplacementY() {
-        dy = -dy;
-    }
-
     public void collisionBrique(Brique brique) {
         Rectangle boundingBoxBalle = getBounds();
         Rectangle boundingBoxBrique = brique.getRectangle();
@@ -55,9 +46,31 @@ public class Balle {
             // La balle touche la brique
             // Ajoutez ici toute autre logique de gestion de collision
 
-            // Inverser le déplacement de la balle (choisissez l'axe en fonction de la collision)
-            inverserDeplacementX();
-            inverserDeplacementY();
+            // Calculer le vecteur normal à la surface de la brique
+            Vecteur normal = new Vecteur(0, 0);
+            if (x + diametre <= brique.getX() || x >= brique.getX() + brique.getLargeur()) {
+                // La collision se produit sur le côté de la brique, inverser le déplacement en x
+                normal.setX((x + diametre <= brique.getX()) ? -1 : 1);
+            } else {
+                // La collision se produit en haut ou en bas de la brique, inverser le déplacement en y
+                normal.setY((y + diametre <= brique.getY()) ? -1 : 1);
+            }
+
+            // Calculer la composante du vecteur de déplacement parallèle à la surface de la brique
+            double dotProduct = deplacement.dot(normal);
+            Vecteur parallel = normal.mult(dotProduct);
+
+            // Calculer la composante du vecteur de déplacement perpendiculaire à la surface de la brique
+            Vecteur perpendicular = deplacement.subtract(parallel);
+
+            // Inverser la composante perpendiculaire
+            perpendicular.inverser();
+
+            // Mettre à jour le vecteur de déplacement en utilisant les composantes recalculées
+            deplacement = parallel.add(perpendicular);
+
+            // Normaliser le vecteur pour conserver une vitesse constante
+            deplacement.normaliser();
 
             // Marquer la brique comme touchée
             brique.setTouchee(true);
