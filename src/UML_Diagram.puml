@@ -1,0 +1,100 @@
+@startuml
+
+class Balle {
+  - x: int
+  - y: int
+  - diametre: int
+  - deplacement: Vecteur
+  - couleur: Color
+  - facteurAmortissement: double
+  + Balle(x: int, y: int, diametre: int, couleur: Color)
+  + deplacer(largeurPanneau: int, hauteurPanneau: int): void
+  + afficher(g: Graphics): void
+  + getBounds(): Rectangle
+  + collisionBrique(brique: Brique): void
+}
+
+class Brique {
+  - x: int
+  - y: int
+  - largeur: int
+  - hauteur: int
+  - couleur: Color
+  - visible: boolean
+  - touchee: boolean
+  + Brique(x: int, y: int, largeur: int, hauteur: int, couleur: Color)
+  + dessiner(g: Graphics): void
+  + getRectangle(): Rectangle
+  + isVisible(): boolean
+  + setVisible(visible: boolean): void
+  + estTouchee(): boolean
+  + setTouchee(touchee: boolean): void
+  + marquerCommeTouchee(): void
+  + getX(): int
+  + getY(): int
+  + setX(x: int): void
+  + getLargeur(): int
+}
+
+class Vecteur {
+  - x: double
+  - y: double
+  + Vecteur(x: double, y: double)
+  + getX(): double
+  + getY(): double
+  + setX(x: double): void
+  + setY(y: double): void
+  + inverserX(): void
+  + inverserY(): void
+  + inverser(): void
+  + refleter(normal: Vecteur): Vecteur
+  + dot(other: Vecteur): double
+  + add(other: Vecteur): Vecteur
+  + subtract(other: Vecteur): Vecteur
+  + mult(scalar: double): Vecteur
+}
+
+class CasseBriquePanel {
+  - balle: Balle
+  - briques: List<Brique>
+  - timer: Timer
+  + CasseBriquePanel()
+  + creerBriques(): List<Brique>
+  + centrerBriquesHorizontalement(): void
+  + actionPerformed(e: ActionEvent): void
+  + gestionCollisionBriques(): void
+  + paintComponent(g: Graphics): void
+}
+
+class FenetreMenu {
+  - frame: JFrame
+  - cards: JPanel
+  - casseBriquePanel: CasseBriquePanel
+  + main(args: String[]): void
+  + FenetreMenu()
+}
+
+class FenetreMenuPanel {
+  - titleLabel: JLabel
+  - button1: JButton
+  - button2: JButton
+  - button3: JButton
+  - teamLabel: JLabel
+  + FenetreMenuPanel()
+  + lancerPartie(): void
+  + createOptionPanel(button: JButton): JPanel
+  + createButton(text: String, mnemonic: int, tooltip: String): JButton
+  + actionPerformed(e: ActionEvent): void
+  + paintComponent(g: Graphics): void
+}
+
+class PausePanel {
+  - enPause: boolean
+  + PausePanel()
+}
+
+CasseBriquePanel --|> JPanel
+FenetreMenuPanel --|> JPanel
+PausePanel --|> JPanel
+
+@enduml
