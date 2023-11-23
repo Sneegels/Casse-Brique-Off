@@ -69,9 +69,6 @@ public class Balle {
             // Mettre à jour le vecteur de déplacement en utilisant les composantes recalculées
             deplacement = parallel.add(perpendicular);
 
-            // Normaliser le vecteur pour conserver une vitesse constante
-            deplacement.normaliser();
-
             // Marquer la brique comme touchée
             brique.setTouchee(true);
         }

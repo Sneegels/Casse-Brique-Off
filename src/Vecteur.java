@@ -36,14 +36,6 @@ public class Vecteur {
         y = -y;
     }
 
-    public void normaliser() {
-        double length = Math.sqrt(x * x + y * y);
-        if (length != 0) {
-            x /= length;
-            y /= length;
-        }
-    }
-
 
     public double dot(Vecteur other) {
         return x * other.x + y * other.y;
