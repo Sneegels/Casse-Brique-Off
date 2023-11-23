@@ -31,9 +31,13 @@ public class Vecteur {
         y = -y;
     }
 
-    public void inverser() {
-        x = -x;
-        y = -y;
+    public double getNorm() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    public Vecteur normaliser() {
+        double norme = getNorm();
+        return new Vecteur(x / norme, y / norme);
     }
 
     public Vecteur refleter(Vecteur normal) {
@@ -42,8 +46,6 @@ public class Vecteur {
         Vecteur projection = normal.mult(2 * dotProduct);
         return this.subtract(projection);
     }
-
-
 
     public double dot(Vecteur other) {
         return x * other.x + y * other.y;

@@ -31,6 +31,7 @@ public class Balle {
         y += deplacement.getY();
     }
 
+
     public void afficher(Graphics g) {
         g.setColor(couleur);
         g.fillOval(x, y, diametre, diametre);
@@ -45,21 +46,17 @@ public class Balle {
         Rectangle boundingBoxBrique = brique.getRectangle();
 
         if (boundingBoxBalle.intersects(boundingBoxBrique)) {
-            // La balle touche la brique
-            // Ajoutez ici toute autre logique de gestion de collision
+            double overlapX = Math.max(0, Math.min(boundingBoxBalle.getMaxX() - boundingBoxBrique.getMinX(), boundingBoxBrique.getMaxX() - boundingBoxBalle.getMinX()));
+            double overlapY = Math.max(0, Math.min(boundingBoxBalle.getMaxY() - boundingBoxBrique.getMinY(), boundingBoxBrique.getMaxY() - boundingBoxBalle.getMinY()));
 
-            // Calculer le vecteur normal à la surface de la brique
-            Vecteur normal = new Vecteur(0, 0);
-            if (x + diametre <= brique.getX() || x >= brique.getX() + brique.getLargeur()) {
-                // La collision se produit sur le côté de la brique, inverser le déplacement en x
-                normal.setX((x + diametre <= brique.getX()) ? -1 : 1);
+            // Déterminer la direction du rebond en fonction de l'overlap maximum
+            if (overlapX > overlapY) {
+                // Rebond vertical
+                deplacement.inverserY();
             } else {
-                // La collision se produit en haut ou en bas de la brique, inverser le déplacement en y
-                normal.setY((y + diametre <= brique.getY()) ? -1 : 1);
+                // Rebond horizontal
+                deplacement.inverserX();
             }
-
-            // Calculer le nouveau vecteur de déplacement en utilisant la réflexion du vecteur de déplacement
-            deplacement = deplacement.refleter(normal);
 
             // Marquer la brique comme touchée
             brique.setTouchee(true);
@@ -68,4 +65,38 @@ public class Balle {
             deplacement = deplacement.mult(facteurAmortissement);
         }
     }
+
+
+
+
+    private void ajusterPosition(Brique brique, Rectangle boundingBoxBrique) {
+        double overlapX = 0;
+        double overlapY = 0;
+
+        // Calculer la quantité de chevauchement en X
+        if (x < boundingBoxBrique.getX()) {
+            overlapX = x + diametre - boundingBoxBrique.getX();
+        } else {
+            overlapX = boundingBoxBrique.getMaxX() - x;
+        }
+
+        // Calculer la quantité de chevauchement en Y
+        if (y < boundingBoxBrique.getY()) {
+            overlapY = y + diametre - boundingBoxBrique.getY();
+        } else {
+            overlapY = boundingBoxBrique.getMaxY() - y;
+        }
+
+        // Ajuster la position de la balle en fonction du chevauchement
+        if (overlapX < overlapY) {
+            // Ajuster la position en X
+            x += (x < boundingBoxBrique.getX()) ? -overlapX : overlapX;
+        } else {
+            // Ajuster la position en Y
+            y += (y < boundingBoxBrique.getY()) ? -overlapY : overlapY;
+        }
+    }
+
+
+
 }
