@@ -84,7 +84,7 @@ class CasseBriquePanel extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Ne recréez pas les briques ici
+        briques = creerBriques(); // Recrée les briques à chaque redessin
         balle.afficher(g);
         for (Brique brique : briques) {
             brique.dessiner(g);
