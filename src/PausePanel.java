@@ -23,6 +23,7 @@ public class PausePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Ajoutez ici toute logique pour quitter la partie
+                System.exit(0);
             }
         });
 

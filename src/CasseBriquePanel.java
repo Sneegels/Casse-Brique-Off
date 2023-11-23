@@ -114,6 +114,7 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener {
             enPause = !enPause;
             if (enPause) {
                 timer.stop();
+                pausePanel.setBounds(0, 0, getWidth(), getHeight());
                 pausePanel.setVisible(true);
             } else {
                 timer.start();
