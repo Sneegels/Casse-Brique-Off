@@ -29,6 +29,14 @@ public class Brique {
         return new Rectangle(x, y, largeur, hauteur);
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public boolean isVisible() {
         return visible;
     }

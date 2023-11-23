@@ -38,4 +38,32 @@ public class Balle {
     public Rectangle getBounds() {
         return new Rectangle(x, y, diametre, diametre);
     }
+
+    public void inverserDeplacementX() {
+        dx = -dx;
+    }
+
+    public void inverserDeplacementY() {
+        dy = -dy;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getDiametre() {
+        return diametre;
+    }
+
+    public int getDeplacementX() {
+        return dx;
+    }
+
+    public int getDeplacementY() {
+        return dy;
+    }
 }
