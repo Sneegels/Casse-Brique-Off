@@ -7,6 +7,8 @@ public class Balle {
     private Vecteur deplacement;
     private Color couleur;
     private double facteurAmortissement;
+    private int ancienX;
+    private int ancienY;
 
     public Balle(int x, int y, int diametre, Color couleur) {
         this.x = x;
@@ -15,6 +17,35 @@ public class Balle {
         this.diametre = diametre;
         this.couleur = couleur;
         this.deplacement = new Vecteur(5, 5); // Vecteur de déplacement initial
+    }
+
+    public void ajusterPositionRaquette(Raquette raquette) {
+        Rectangle boundingBoxBalle = getBounds();
+        Rectangle boundingBoxRaquette = raquette.getBounds();
+
+        if (boundingBoxBalle.intersects(boundingBoxRaquette)) {
+            double overlapX = Math.max(0, Math.min(boundingBoxBalle.getMaxX() - boundingBoxRaquette.getMinX(), boundingBoxRaquette.getMaxX() - boundingBoxBalle.getMinX()));
+            double overlapY = Math.max(0, Math.min(boundingBoxBalle.getMaxY() - boundingBoxRaquette.getMinY(), boundingBoxRaquette.getMaxY() - boundingBoxBalle.getMinY()));
+
+            // Sauvegarder la position précédente de la balle
+            ancienX = x;
+            ancienY = y;
+
+            // Déterminer la direction du rebond en fonction de l'overlap maximum
+            if (overlapX > overlapY) {
+                // Rebond vertical
+                deplacement.inverserY();
+
+                // Ajuster la position en Y pour éviter la téléportation
+                y = (int) (deplacement.getY() > 0 ? boundingBoxRaquette.getMinY() - diametre : boundingBoxRaquette.getMaxY());
+            } else {
+                // Rebond horizontal
+                deplacement.inverserX();
+
+                // Ajuster la position en X pour éviter la téléportation
+                x = (int) (deplacement.getX() > 0 ? boundingBoxRaquette.getMinX() - diametre : boundingBoxRaquette.getMaxX());
+            }
+        }
     }
 
     public void deplacer(int largeurPanneau, int hauteurPanneau) {
@@ -31,6 +62,19 @@ public class Balle {
         y += deplacement.getY();
     }
 
+    public void restaurerPosition() {
+        // Restaurer la position précédente de la balle
+        x = ancienX;
+        y = ancienY;
+    }
+
+    public void inverserDeplacementX() {
+        deplacement.inverserX();
+    }
+
+    public Vecteur getDeplacement() {
+        return deplacement;
+    }
 
     public void afficher(Graphics g) {
         g.setColor(couleur);
@@ -66,6 +110,29 @@ public class Balle {
         }
     }
 
+    public void collisionRaquette(Raquette raquette) {
+        Rectangle boundingBoxBalle = getBounds();
+        Rectangle boundingBoxRaquette = raquette.getBounds();
+
+        if (boundingBoxBalle.intersects(boundingBoxRaquette)) {
+            double overlapX = Math.max(0, Math.min(boundingBoxBalle.getMaxX() - boundingBoxRaquette.getMinX(), boundingBoxRaquette.getMaxX() - boundingBoxBalle.getMinX()));
+            double overlapY = Math.max(0, Math.min(boundingBoxBalle.getMaxY() - boundingBoxRaquette.getMinY(), boundingBoxRaquette.getMaxY() - boundingBoxBalle.getMinY()));
+
+            // Ajuster la position de la balle pour éviter une nouvelle collision immédiate
+            if (overlapX < overlapY) {
+                // Ajuster la position en X
+                x += (deplacement.getX() > 0) ? -1 : 1;
+            } else {
+                // Ajuster la position en Y
+                y += (deplacement.getY() > 0) ? -1 : 1;
+            }
+
+            // Rebondir sur la raquette
+            deplacement.inverserY();
+        }
+    }
+
+
     private void ajusterPosition(Brique brique, Rectangle boundingBoxBrique) {
         double overlapX = 0;
         double overlapY = 0;
@@ -93,7 +160,5 @@ public class Balle {
             y += (y < boundingBoxBrique.getY()) ? -overlapY : overlapY;
         }
     }
-
-
 
 }

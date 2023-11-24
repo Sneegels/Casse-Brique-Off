@@ -71,9 +71,11 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
     @Override
     public void actionPerformed(ActionEvent e) {
         balle.deplacer(getWidth(), getHeight());
+        gestionCollisionRaquette();
         gestionCollisionBriques();
         repaint();
     }
+
     private void gestionCollisionBriques() {
         Rectangle boundingBoxBalle = balle.getBounds();
         Iterator<Brique> iterator = briques.iterator();
@@ -90,6 +92,22 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
             }
         }
     }
+
+    private void gestionCollisionRaquette() {
+        Rectangle boundingBoxBalle = balle.getBounds();
+        Rectangle boundingBoxRaquette = raquette.getBounds();
+
+        if (boundingBoxBalle.intersects(boundingBoxRaquette)) {
+            balle.collisionRaquette(raquette);
+
+            // Condition pour détecter un comportement indésirable
+            if (Math.abs(balle.getDeplacement().getX()) < 0.5 && Math.abs(balle.getDeplacement().getY()) < 0.5) {
+                // Si la vitesse de déplacement de la balle est très faible, il y a un comportement indésirable
+                balle.restaurerPosition();
+            }
+        }
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
