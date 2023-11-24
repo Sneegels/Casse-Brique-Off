@@ -108,7 +108,6 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         }
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -129,7 +128,6 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         raquette.deplacer(e.getX());
         repaint();
     }
-
 
     @Override
     public void keyPressed(KeyEvent e) {

@@ -19,35 +19,6 @@ public class Balle {
         this.deplacement = new Vecteur(5, 5); // Vecteur de déplacement initial
     }
 
-    public void ajusterPositionRaquette(Raquette raquette) {
-        Rectangle boundingBoxBalle = getBounds();
-        Rectangle boundingBoxRaquette = raquette.getBounds();
-
-        if (boundingBoxBalle.intersects(boundingBoxRaquette)) {
-            double overlapX = Math.max(0, Math.min(boundingBoxBalle.getMaxX() - boundingBoxRaquette.getMinX(), boundingBoxRaquette.getMaxX() - boundingBoxBalle.getMinX()));
-            double overlapY = Math.max(0, Math.min(boundingBoxBalle.getMaxY() - boundingBoxRaquette.getMinY(), boundingBoxRaquette.getMaxY() - boundingBoxBalle.getMinY()));
-
-            // Sauvegarder la position précédente de la balle
-            ancienX = x;
-            ancienY = y;
-
-            // Déterminer la direction du rebond en fonction de l'overlap maximum
-            if (overlapX > overlapY) {
-                // Rebond vertical
-                deplacement.inverserY();
-
-                // Ajuster la position en Y pour éviter la téléportation
-                y = (int) (deplacement.getY() > 0 ? boundingBoxRaquette.getMinY() - diametre : boundingBoxRaquette.getMaxY());
-            } else {
-                // Rebond horizontal
-                deplacement.inverserX();
-
-                // Ajuster la position en X pour éviter la téléportation
-                x = (int) (deplacement.getX() > 0 ? boundingBoxRaquette.getMinX() - diametre : boundingBoxRaquette.getMaxX());
-            }
-        }
-    }
-
     public void deplacer(int largeurPanneau, int hauteurPanneau) {
         if (x + deplacement.getX() < 0 || x + deplacement.getX() > largeurPanneau - diametre) {
             // Inverser la composante x du vecteur de déplacement en cas de collision avec les bords horizontaux
@@ -66,10 +37,6 @@ public class Balle {
         // Restaurer la position précédente de la balle
         x = ancienX;
         y = ancienY;
-    }
-
-    public void inverserDeplacementX() {
-        deplacement.inverserX();
     }
 
     public Vecteur getDeplacement() {

@@ -33,9 +33,4 @@ public class Raquette {
         y = newY;
     }
 
-    public void dessiner(Graphics g) {
-        g.setColor(couleur);
-        g.fillRect(x, y, largeur, hauteur);
-    }
-
 }
