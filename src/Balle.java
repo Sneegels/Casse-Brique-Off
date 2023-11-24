@@ -107,8 +107,12 @@ public class Balle {
 
             // Réduire la vitesse après la collision pour éviter les rebonds multiples rapides
             deplacement = deplacement.mult(facteurAmortissement);
+
+            // Ajuster la position de la balle pour éviter la téléportation
+            ajusterPosition(brique, overlapX, overlapY);
         }
     }
+
 
     public void collisionRaquette(Raquette raquette) {
         Rectangle boundingBoxBalle = getBounds();
@@ -133,32 +137,14 @@ public class Balle {
     }
 
 
-    private void ajusterPosition(Brique brique, Rectangle boundingBoxBrique) {
-        double overlapX = 0;
-        double overlapY = 0;
-
-        // Calculer la quantité de chevauchement en X
-        if (x < boundingBoxBrique.getX()) {
-            overlapX = x + diametre - boundingBoxBrique.getX();
-        } else {
-            overlapX = boundingBoxBrique.getMaxX() - x;
-        }
-
-        // Calculer la quantité de chevauchement en Y
-        if (y < boundingBoxBrique.getY()) {
-            overlapY = y + diametre - boundingBoxBrique.getY();
-        } else {
-            overlapY = boundingBoxBrique.getMaxY() - y;
-        }
-
+    private void ajusterPosition(Brique brique, double overlapX, double overlapY) {
         // Ajuster la position de la balle en fonction du chevauchement
         if (overlapX < overlapY) {
             // Ajuster la position en X
-            x += (x < boundingBoxBrique.getX()) ? -overlapX : overlapX;
+            x += (x < brique.getX()) ? -overlapX : overlapX;
         } else {
             // Ajuster la position en Y
-            y += (y < boundingBoxBrique.getY()) ? -overlapY : overlapY;
+            y += (y < brique.getY()) ? -overlapY : overlapY;
         }
     }
-
 }
