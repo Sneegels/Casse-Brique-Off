@@ -20,18 +20,31 @@ public class Balle {
     }
 
     public void deplacer(int largeurPanneau, int hauteurPanneau) {
-        if (x + deplacement.getX() < 0 || x + deplacement.getX() > largeurPanneau - diametre) {
-            // Inverser la composante x du vecteur de déplacement en cas de collision avec les bords horizontaux
-            deplacement.inverserX();
-        }
-        if (y + deplacement.getY() < 0 || y + deplacement.getY() > hauteurPanneau - diametre) {
-            // Inverser la composante y du vecteur de déplacement en cas de collision avec les bords verticaux
-            deplacement.inverserY();
-        }
+        ancienX = x;
+        ancienY = y;
 
         x += deplacement.getX();
         y += deplacement.getY();
+
+        // Gestion de la collision avec les bords horizontaux
+        if (x < 0 || x + diametre > largeurPanneau) {
+            deplacement.inverserX();
+            x = Math.max(0, Math.min(x, largeurPanneau - diametre));
+        }
+
+        // Gestion de la collision avec le bord inférieur
+        if (y + diametre > hauteurPanneau) {
+            // Faire sortir la balle de l'écran en bas
+            y = hauteurPanneau;  // Vous pouvez également ajuster cette ligne pour définir une position spécifique
+            // Inverser la direction verticale pour que la balle continue en dessous du bord inférieur
+            deplacement.inverserY();
+        } else if (y < 0) {
+            // Gestion de la collision avec le bord supérieur
+            deplacement.inverserY();
+            y = 0;
+        }
     }
+
 
     public void restaurerPosition() {
         // Restaurer la position précédente de la balle
@@ -113,5 +126,25 @@ public class Balle {
             // Ajuster la position en Y
             y += (y < brique.getY()) ? -overlapY : overlapY;
         }
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    public int getDiametre() {
+        return diametre;
     }
 }

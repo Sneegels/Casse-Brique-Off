@@ -1,19 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.awt.event.MouseEvent;
 
 class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, MouseMotionListener {
     private Balle balle;
     private Raquette raquette;
     private List<Brique> briques;
     private Timer timer;
+    private JFrame pauseFrame;
+    private Image fondGalaxie;
+    private ImageIcon gameOverIcon;
+    private boolean gameOver;
+    private long gameOverTime;
     private boolean enPause;
     private PausePanel pausePanel;
-    private Image fondGalaxie;
 
     public CasseBriquePanel() {
         setLayout(null);
@@ -26,16 +34,32 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         briques = creerBriques();
         centrerBriquesHorizontalement();
         fondGalaxie = new ImageIcon("C:\\Users\\tweek\\Desktop\\Projet Java POO\\images.jpg").getImage();
+        gameOverIcon = new ImageIcon("C:\\Users\\tweek\\Desktop\\Projet Java POO\\game-over-801800.png");
 
         addKeyListener(this);
         setFocusable(true);
         addMouseMotionListener(this);
 
         enPause = false;
-        pausePanel = new PausePanel();
-        pausePanel.setBounds(0, 0, getWidth(), getHeight());
-        pausePanel.setVisible(false);
-        add(pausePanel);
+        pauseFrame = createPauseFrame();
+
+        gameOver = false;
+        gameOverTime = 0;
+    }
+
+    private JFrame createPauseFrame() {
+        JFrame frame = new JFrame("Pause");
+        frame.setUndecorated(true);
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBackground(new Color(0, 0, 0, 0));
+        frame.setOpacity(0.7f);
+        frame.setLocationRelativeTo(this);
+
+        pausePanel = new PausePanel(this);
+        frame.add(pausePanel);
+
+        return frame;
     }
 
     private List<Brique> creerBriques() {
@@ -72,10 +96,23 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        balle.deplacer(getWidth(), getHeight());
-        gestionCollisionRaquette();
-        gestionCollisionBriques();
-        repaint();
+        if (!gameOver) {
+            balle.deplacer(getWidth(), getHeight());
+            gestionCollisionRaquette();
+            gestionCollisionBriques();
+
+            if (balle.getY() > getHeight()) {
+                gameOver = true;
+                gameOverTime = System.currentTimeMillis();
+            }
+
+            repaint();
+        } else {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - gameOverTime >= 10000) {
+                System.exit(0);
+            }
+        }
     }
 
     private void gestionCollisionBriques() {
@@ -102,9 +139,7 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         if (boundingBoxBalle.intersects(boundingBoxRaquette)) {
             balle.collisionRaquette(raquette);
 
-            // Condition pour détecter un comportement indésirable
             if (Math.abs(balle.getDeplacement().getX()) < 0.5 && Math.abs(balle.getDeplacement().getY()) < 0.5) {
-                // Si la vitesse de déplacement de la balle est très faible, il y a un comportement indésirable
                 balle.restaurerPosition();
             }
         }
@@ -115,7 +150,6 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         super.paintComponent(g);
         raquette.setY(getHeight() - 100);
 
-        // Dessiner l'image de fond (galaxie)
         g.drawImage(fondGalaxie, 0, 0, getWidth(), getHeight(), this);
 
         balle.afficher(g);
@@ -125,6 +159,16 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
             if (!brique.estTouchee()) {
                 brique.dessiner(g);
             }
+        }
+
+        if (gameOver) {
+            afficherGameOver(g);
+        } else if (balle.getY() > getHeight()) {
+            int iconWidth = gameOverIcon.getIconWidth();
+            int iconHeight = gameOverIcon.getIconHeight();
+            int x = (getWidth() - iconWidth) / 2;
+            int y = (getHeight() - iconHeight) / 2;
+            gameOverIcon.paintIcon(this, g, x, y);
         }
     }
 
@@ -142,11 +186,10 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
             enPause = !enPause;
             if (enPause) {
                 timer.stop();
-                pausePanel.setBounds(0,0,getWidth(),getHeight());
-                pausePanel.setVisible(true);
+                pauseFrame.setVisible(true);
             } else {
                 timer.start();
-                pausePanel.setVisible(false);
+                pauseFrame.setVisible(false);
             }
             repaint();
         }
@@ -165,5 +208,50 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
     @Override
     public void keyReleased(KeyEvent e) {
         // Ne rien faire ici
+    }
+
+    private void afficherGameOver(Graphics g) {
+        removeAll();
+        repaint();
+        revalidate();
+
+        JLabel gameOverLabel = new JLabel("Game Over");
+        gameOverLabel.setForeground(Color.RED);
+        gameOverLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        gameOverLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gameOverLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+        int labelWidth = 200;
+        int labelHeight = 50;
+        int x = (getWidth() - labelWidth) / 2;
+        int y = (getHeight() - labelHeight) / 2;
+
+        gameOverLabel.setBounds(x, y, labelWidth, labelHeight);
+
+        add(gameOverLabel);
+
+        gameOver = true;
+        gameOverTime = System.currentTimeMillis();
+
+        Timer gameOverTimer = new Timer(10000, event -> System.exit(0));
+        gameOverTimer.setRepeats(false);
+        gameOverTimer.start();
+    }
+
+    public void reprendrePartie() {
+        enPause = false;
+        timer.start();
+        pausePanel.setVisible(false);
+        requestFocusInWindow();
+        repaint();
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Casse Brique");
+        CasseBriquePanel casseBriquePanel = new CasseBriquePanel();
+        frame.add(casseBriquePanel);
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 }
