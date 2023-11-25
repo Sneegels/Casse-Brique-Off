@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Random;
 
 public class Brique {
 
@@ -15,7 +16,7 @@ public class Brique {
         this.y = y;
         this.largeur = largeur;
         this.hauteur = hauteur;
-        this.couleur = couleur;
+        this.couleur = genererCouleurAleatoire();
         this.visible = true;
         this.touchee = false;
     }
@@ -35,20 +36,24 @@ public class Brique {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
     public boolean estTouchee() {
         return touchee;
     }
 
-    public void setTouchee(boolean touchee) {
-        this.touchee = touchee;
+    private static final Color[] COULEURS_DISPONIBLES = {
+            new Color(0, 0, 150),     // Bleu
+            new Color(150, 100, 0),   // Violet
+            new Color(0, 0, 0), // Gris
+            new Color(0, 150, 0)      // Vert sombre
+    };
+
+    private Color genererCouleurAleatoire() {
+        Random rand = new Random();
+        return COULEURS_DISPONIBLES[rand.nextInt(COULEURS_DISPONIBLES.length)];
     }
 
-    public void marquerCommeTouchee() {
-        touchee = true;
+    public void setTouchee(boolean touchee) {
+        this.touchee = touchee;
     }
 
     public int getX() {

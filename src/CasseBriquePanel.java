@@ -13,17 +13,19 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
     private Timer timer;
     private boolean enPause;
     private PausePanel pausePanel;
+    private Image fondGalaxie;
 
     public CasseBriquePanel() {
         setLayout(null);
         setBackground(Color.BLACK);
 
-        balle = new Balle(200, 500, 20, Color.WHITE);
-        raquette = new Raquette(getWidth() / 2 - 50, getHeight() - 100, 100, 20, Color.BLUE);
+        balle = new Balle(200, 500, 20, Color.RED);
+        raquette = new Raquette(getWidth() / 2 - 50, getHeight() - 100, 100, 20, Color.WHITE);
         timer = new Timer(10, this);
         timer.start();
         briques = creerBriques();
         centrerBriquesHorizontalement();
+        fondGalaxie = new ImageIcon("C:\\Users\\tweek\\Desktop\\Projet Java POO\\images.jpg").getImage();
 
         addKeyListener(this);
         setFocusable(true);
@@ -112,6 +114,9 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         raquette.setY(getHeight() - 100);
+
+        // Dessiner l'image de fond (galaxie)
+        g.drawImage(fondGalaxie, 0, 0, getWidth(), getHeight(), this);
 
         balle.afficher(g);
         raquette.afficher(g);
