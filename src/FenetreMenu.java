@@ -60,11 +60,11 @@ class FenetreMenuPanel extends JPanel implements ActionListener {
 
         button1 = createButton("Nouvelle Partie", KeyEvent.VK_1, "Ctrl+1");
         button1.addActionListener(new ActionListener() {
-                                      @Override
-                                      public void actionPerformed(ActionEvent e) {
-                                          lancerPartie();
-                                      }
-                                  });
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lancerPartie();
+            }
+        });
 
         button2 = createButton("Charger une Partie", KeyEvent.VK_2, "Ctrl+2");
 

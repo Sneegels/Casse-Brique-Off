@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.CompoundBorder;
 
-class PausePanel extends JPanel {
+public class PausePanel extends JPanel {
     private JButton resumeButton;
     private JButton quitButton;
     private CasseBriquePanel casseBriquePanel;
@@ -19,7 +20,7 @@ class PausePanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
-        buttonPanel.setLayout(new GridLayout(2, 1, 0, 10)); // 2 lignes, 1 colonne, espacement vertical de 10 pixels
+        buttonPanel.setLayout(new GridLayout(2, 1, 0, 10));
         buttonPanel.add(resumeButton);
         buttonPanel.add(quitButton);
 
@@ -43,11 +44,11 @@ class PausePanel extends JPanel {
 
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setForeground(Color.RED); // Change la couleur lorsque la souris survole le bouton
+                button.setForeground(Color.RED);
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setForeground(Color.WHITE); // Revert à la couleur initiale quand la souris quitte le bouton
+                button.setForeground(Color.WHITE);
             }
         });
 
