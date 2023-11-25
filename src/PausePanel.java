@@ -64,4 +64,8 @@ class PausePanel extends JPanel {
 
         return button;
     }
+
+    public JButton getResumeButton() {
+        return resumeButton;
+    }
 }

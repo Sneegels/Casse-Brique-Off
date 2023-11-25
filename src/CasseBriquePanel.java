@@ -59,8 +59,17 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         pausePanel = new PausePanel(this);
         frame.add(pausePanel);
 
+        // Ajoute un ActionListener au bouton "Reprendre"
+        pausePanel.getResumeButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reprendrePartieDepuisPause();
+            }
+        });
+
         return frame;
     }
+
 
     private List<Brique> creerBriques() {
         List<Brique> briques = new ArrayList<>();
@@ -242,6 +251,14 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         enPause = false;
         timer.start();
         pausePanel.setVisible(false);
+        requestFocusInWindow();
+        repaint();
+    }
+
+    public void reprendrePartieDepuisPause() {
+        enPause = false;
+        timer.start();
+        pauseFrame.setVisible(false);
         requestFocusInWindow();
         repaint();
     }
