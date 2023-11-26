@@ -41,10 +41,7 @@ public class Brique {
     }
 
     private static final Color[] COULEURS_DISPONIBLES = {
-            new Color(0, 0, 150),     // Bleu
-            new Color(150, 100, 0),   // Violet
-            new Color(0, 0, 0), // Gris
-            new Color(0, 150, 0)      // Vert sombre
+            new Color(213, 160, 30),   // Violet
     };
 
     private Color genererCouleurAleatoire() {

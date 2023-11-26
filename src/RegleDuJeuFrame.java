@@ -35,17 +35,25 @@ public class RegleDuJeuFrame extends JFrame {
     }
 
     private void initUI() {
-        // Ajoutez du texte ou tout composant nécessaire à votre fenêtre de règles ici
-        String reglesText = "Le but du jeu est de faire rebondir la balle sur la raquette pour détruire toutes les briques et collecter les points. \n\n" +
-                "La raquette est dirigée à gauche ou à droite par les deux flèches (droite et gauche) du clavier. \n\n" +
-                "Quand la balle tombe par terre le jeu s’arrête.";
+        // Texte de règles
+        String reglesText = "Le but du jeu est de faire rebondir la balle sur la raquette pour détruire toutes les briques et collecter les points. " +
+                "La raquette est dirigée à gauche ou à droite par les deux flèches (droite et gauche) du clavier. " +
+                "Quand la balle tombe par terre, le jeu s’arrête.";
 
-        JLabel textLabel = new JLabel(reglesText);
-        textLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-        textLabel.setForeground(Color.WHITE);
+        // Créer une zone de texte avec le texte
+        JTextArea textArea = new JTextArea(reglesText);
+        textArea.setFont(new Font("Arial", Font.PLAIN, 18));
+        textArea.setForeground(Color.WHITE);
+        textArea.setLineWrap(true);  // Activer le retour automatique à la ligne
+        textArea.setWrapStyleWord(true);  // Coupe les mots pour s'adapter à la largeur
 
-        // Utilisez une mise en page pour organiser les composants
-        setLayout(new BorderLayout());
+        // Centrer le texte dans la zone de texte
+        textArea.setAlignmentX(CENTER_ALIGNMENT);
+
+        // Utiliser un panneau pour organiser les composants
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
+        contentPanel.setBackground(Color.BLACK);  // Fond du panneau
 
         // Créez un conteneur pour le titre
         JPanel titlePanel = new JPanel();
@@ -53,10 +61,23 @@ public class RegleDuJeuFrame extends JFrame {
         titlePanel.add(titleLabel);
 
         // Ajoutez le conteneur du titre en haut de la fenêtre
-        add(titlePanel, BorderLayout.NORTH);
+        contentPanel.add(titlePanel, BorderLayout.NORTH);
 
-        // Ajoutez la zone de texte au centre
-        add(textLabel, BorderLayout.CENTER);
+        // Ajouter la zone de texte centrée au centre du panneau
+        contentPanel.add(textArea, BorderLayout.CENTER);
+
+
+        // Définir le contenu du panneau comme le contenu de la fenêtre
+        setContentPane(contentPanel);
+
+        // Configurations générales de la fenêtre
+        setTitle("Règle du Jeu");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setUndecorated(true);
+        pack();  // Redimensionner la fenêtre en fonction des composants
+        setLocationRelativeTo(null);  // Centrer la fenêtre sur l'écran
+        setVisible(true);
     }
 
     private void setDefaultAttributes() {
@@ -64,10 +85,6 @@ public class RegleDuJeuFrame extends JFrame {
         getContentPane().setBackground(Color.BLACK);
         setTitle("Règle du Jeu");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        // Définir une icône pour la fenêtre (assurez-vous d'avoir le fichier icon.png dans le même répertoire)
-        ImageIcon icon = new ImageIcon("icon.png");
-        setIconImage(icon.getImage());
     }
 
     private void applyTheme() {
@@ -123,6 +140,4 @@ public class RegleDuJeuFrame extends JFrame {
     private JButton createButton(String text) {
         return createButton(text, null);
     }
-
-
 }

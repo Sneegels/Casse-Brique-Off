@@ -27,8 +27,8 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         setLayout(null);
         setBackground(Color.BLACK);
 
-        balle = new Balle(200, 500, 20, Color.RED);
-        raquette = new Raquette(getWidth() / 2 - 50, getHeight() - 100, 100, 20, Color.WHITE);
+        balle = new Balle(200, 500, 20, new Color(195, 223, 225));
+        raquette = new Raquette(getWidth() / 2 - 50, getHeight() - 100, 175, 20, new Color(224, 225, 79));
         timer = new Timer(10, this);
         timer.start();
         briques = creerBriques();
