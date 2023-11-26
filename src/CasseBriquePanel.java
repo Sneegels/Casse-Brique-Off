@@ -9,12 +9,16 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.awt.event.*;
+
+
 
 class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, MouseMotionListener {
     private Balle balle;
     private Raquette raquette;
     private List<Brique> briques;
     private Timer timer;
+    private Timer closeTimer;
     private JFrame pauseFrame;
     private Image fondGalaxie;
     private ImageIcon gameOverIcon;
@@ -26,6 +30,13 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
     public CasseBriquePanel() {
         setLayout(null);
         setBackground(Color.BLACK);
+
+        closeTimer = new Timer(3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0); // Fermez l'application
+            }
+        });
 
         balle = new Balle(200, 500, 20, new Color(195, 223, 225));
         raquette = new Raquette(getWidth() / 2 - 50, getHeight() - 100, 175, 20, new Color(224, 225, 79));
@@ -45,6 +56,15 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
 
         gameOver = false;
         gameOverTime = 0;
+
+        // Ajout du ComponentListener pour redimensionner la fenêtre
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                raquette.setY(getHeight() - 100);
+                balle.setY(Math.min(balle.getY(), getHeight() - 20));
+            }
+        });
     }
 
     private JFrame createPauseFrame() {
@@ -113,6 +133,20 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
             if (balle.getY() > getHeight()) {
                 gameOver = true;
                 gameOverTime = System.currentTimeMillis();
+
+                // Démarrez un Timer pour fermer la fenêtre après 3 secondes
+                Timer closeTimer = new Timer(3000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {
+                        // Obtenez la fenêtre parente et fermez-la
+                        Window window = SwingUtilities.getWindowAncestor(CasseBriquePanel.this);
+                        if (window != null) {
+                            window.dispose();
+                        }
+                    }
+                });
+                closeTimer.setRepeats(false); // Ne répétez pas le Timer
+                closeTimer.start();
             }
 
             repaint();
@@ -170,14 +204,8 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
             }
         }
 
-        if (gameOver) {
+        if (balle.getY() > getHeight()) {
             afficherGameOver(g);
-        } else if (balle.getY() > getHeight()) {
-            int iconWidth = gameOverIcon.getIconWidth();
-            int iconHeight = gameOverIcon.getIconHeight();
-            int x = (getWidth() - iconWidth) / 2;
-            int y = (getHeight() - iconHeight) / 2;
-            gameOverIcon.paintIcon(this, g, x, y);
         }
     }
 
@@ -220,10 +248,6 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
     }
 
     private void afficherGameOver(Graphics g) {
-        removeAll();
-        repaint();
-        revalidate();
-
         JLabel gameOverLabel = new JLabel("Game Over");
         gameOverLabel.setForeground(Color.RED);
         gameOverLabel.setFont(new Font("Arial", Font.BOLD, 36));
@@ -239,12 +263,20 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
 
         add(gameOverLabel);
 
+        // Mettez à jour les variables de game over
         gameOver = true;
         gameOverTime = System.currentTimeMillis();
 
-        Timer gameOverTimer = new Timer(10000, event -> System.exit(0));
-        gameOverTimer.setRepeats(false);
-        gameOverTimer.start();
+        // Démarrez un Timer pour fermer la fenêtre après 3 secondes
+        Timer closeTimer = new Timer(3000, arg0 -> {
+            // Obtenez la fenêtre parente et fermez-la
+            Window window = SwingUtilities.getWindowAncestor(CasseBriquePanel.this);
+            if (window != null) {
+                window.dispose();
+            }
+        });
+        closeTimer.setRepeats(false); // Ne répétez pas le Timer
+        closeTimer.start();
     }
 
     public void reprendrePartie() {
