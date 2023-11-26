@@ -105,6 +105,25 @@ class FenetreMenuPanel extends JPanel implements ActionListener {
                 lancerChargementPartie();
             }
         });
+
+        button3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lancerRegle();
+            }
+        });
+    }
+
+    public void lancerRegle() {
+        RegleDuJeuFrame regleDuJeuFrame = new RegleDuJeuFrame(fenetreMenu);
+        regleDuJeuFrame.setVisible(true);
+
+        // Fermez la fenêtre actuelle
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window != null) {
+            window.dispose();
+        }
+        repaint(); // Ajoutez cette ligne si nécessaire
     }
 
     public void lancerChargementPartie() {
