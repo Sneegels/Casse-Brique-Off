@@ -107,18 +107,6 @@ class FenetreMenuPanel extends JPanel implements ActionListener {
         });
     }
 
-    public void lancerMenuPrincipal() {
-        FenetreMenu fenetreMenu = new FenetreMenu();
-        fenetreMenu.setVisible(true);
-
-        // Fermez la fenêtre actuelle
-        Window window = SwingUtilities.getWindowAncestor(this);
-        if (window != null) {
-            window.dispose();
-        }
-    }
-
-
     public void lancerChargementPartie() {
         ChargementPartieFrame chargementPartieFrame = new ChargementPartieFrame(fenetreMenu);
         chargementPartieFrame.setVisible(true);
