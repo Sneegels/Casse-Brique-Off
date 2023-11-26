@@ -4,6 +4,13 @@ public class Partie {
     // Autres membres et méthodes de la classe Partie
 
     // Fonction de sauvegarde
+    public void quitterPartie() {
+        // Ajoutez ici le code pour sauvegarder la partie
+        Partie maPartie = new Partie();
+        maPartie.sauvegarderPartie("nomDeLaPartie");
+        System.exit(0);
+    }
+
     public void sauvegarderPartie(String nomFichier) {
         try (ObjectOutputStream sortie = new ObjectOutputStream(new FileOutputStream(nomFichier))) {
             sortie.writeObject(this);  // Sauvegarde de l'objet Partie

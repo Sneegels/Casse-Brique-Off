@@ -1,8 +1,9 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.io.*;
 
-class ChargementPartieFrame extends JFrame {
+public class ChargementPartieFrame extends JFrame {
     private JLabel titleLabel;
     private FenetreMenu fenetreMenu;
 
@@ -11,38 +12,30 @@ class ChargementPartieFrame extends JFrame {
         applyTheme();
         setDefaultAttributes();
 
-        // Utilisez un BoxLayout vertical pour aligner les composants de haut en bas
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-        // Ajouter de l'espace verticalement
         add(Box.createVerticalGlue());
 
-        // Ajouter trois boutons pour les parties
         add(createPartieButton("Partie 1"));
         add(createPartieButton("Partie 2"));
         add(createPartieButton("Partie 3"));
 
-        // Ajouter de l'espace verticalement
         add(Box.createVerticalGlue());
 
-        // Ajoutez le bouton "Retour" au bas de la fenêtre
         add(createButton("Retour", e -> {
-            // Ferme la fenêtre de chargement et affiche la fenêtre du menu principal
             dispose();
             lancerMenuPrincipal();
         }));
 
-        // Ajouter de l'espace verticalement
         add(Box.createVerticalGlue());
 
-        // Mettez la fenêtre en plein écran et retirez la décoration (barre de titre, bordures, etc.)
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(true);
     }
 
     private void setDefaultAttributes() {
         setFont(new Font("Arial", Font.PLAIN, 18));
-        getContentPane().setBackground(Color.BLACK);  // Définir la couleur de fond du conteneur principal
+        getContentPane().setBackground(Color.BLACK);
         setTitle("Chargement de la Partie");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -58,12 +51,10 @@ class ChargementPartieFrame extends JFrame {
         add(Box.createVerticalGlue());
     }
 
-    // Ajoutez cette méthode pour lancer le menu principal depuis ChargementPartieFrame
     private void lancerMenuPrincipal() {
         FenetreMenu fenetreMenu = new FenetreMenu();
         fenetreMenu.setVisible(true);
 
-        // Fermez la fenêtre actuelle
         Window window = SwingUtilities.getWindowAncestor(this);
         if (window != null) {
             window.dispose();
@@ -100,14 +91,13 @@ class ChargementPartieFrame extends JFrame {
         return button;
     }
 
+
     private JButton createPartieButton(String text) {
         JButton button = createButton(text);
         button.addActionListener(e -> {
-            // Ajoutez le code pour charger la partie sélectionnée
-            System.out.println("Charger la " + text);
+            chargerPartie(text);
         });
 
-        // Ajoutez une bordure autour du bouton pour l'effet d'encadrement
         button.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 2),
                 BorderFactory.createEmptyBorder(50, 10, 50, 10)
@@ -116,8 +106,43 @@ class ChargementPartieFrame extends JFrame {
         return button;
     }
 
-    // Utilisez la surcharge de la méthode pour créer le bouton "Retour" sans ActionListener
+    private void chargerPartie(String nomPartie) {
+        String cheminFichier = "parties/" + nomPartie + ".ser";
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(cheminFichier))) {
+            Partie partieChargee = (Partie) ois.readObject();
+            System.out.println("Partie chargée : " + partieChargee);
+            // Ajoutez le code pour utiliser la partie chargée
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sauvegarderPartie(Partie partie, String nomPartie) {
+        String cheminDossier = "C:\\Users\\tweek\\Desktop\\Projet Java POO\\Parties";
+        String cheminFichier = cheminDossier + "/" + nomPartie + ".ser";
+
+        File dossier = new File(cheminDossier);
+        if (!dossier.exists()) {
+            dossier.mkdir();
+        }
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(cheminFichier))) {
+            oos.writeObject(partie);
+            System.out.println("Partie sauvegardée : " + partie);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private JButton createButton(String text) {
         return createButton(text, null);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            FenetreMenu fenetreMenu = new FenetreMenu();
+            fenetreMenu.setVisible(true);
+        });
     }
 }
