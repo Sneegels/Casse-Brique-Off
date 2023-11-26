@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class FenetreMenu {
+public class FenetreMenu extends JFrame {
 
     private JFrame frame;
     private JPanel cards;
@@ -41,6 +41,10 @@ public class FenetreMenu {
         frame.setVisible(true);
     }
 
+    public FenetreMenuPanel getFenetreMenuPanel() {
+        return new FenetreMenuPanel();
+    }
+
 }
 
 class FenetreMenuPanel extends JPanel implements ActionListener {
@@ -49,8 +53,10 @@ class FenetreMenuPanel extends JPanel implements ActionListener {
     private JButton button2;
     private JButton button3;
     private JLabel teamLabel;
+    private FenetreMenu fenetreMenu;
 
     public FenetreMenuPanel() {
+        this.fenetreMenu = fenetreMenu;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.BLACK);
         titleLabel = new JLabel("Casse-Brique");
@@ -91,7 +97,42 @@ class FenetreMenuPanel extends JPanel implements ActionListener {
         teamLabel.setAlignmentX(CENTER_ALIGNMENT);
         teamLabel.setAlignmentY(10);
         add(teamLabel);
+
+        // Dans la méthode constructeur de FenetreMenuPanel
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lancerChargementPartie();
+            }
+        });
     }
+
+    public void lancerMenuPrincipal() {
+        FenetreMenu fenetreMenu = new FenetreMenu();
+        fenetreMenu.setVisible(true);
+
+        // Fermez la fenêtre actuelle
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window != null) {
+            window.dispose();
+        }
+    }
+
+
+    public void lancerChargementPartie() {
+        ChargementPartieFrame chargementPartieFrame = new ChargementPartieFrame(fenetreMenu);
+        chargementPartieFrame.setVisible(true);
+
+        // Fermez la fenêtre actuelle
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window != null) {
+            window.dispose();
+        }
+        repaint(); // Ajoutez cette ligne si nécessaire
+    }
+
+
+
 
     public void lancerPartie() {
         // Créez votre instance CasseBriquePanel ici
