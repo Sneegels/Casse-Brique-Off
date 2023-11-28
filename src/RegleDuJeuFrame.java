@@ -44,15 +44,16 @@ public class RegleDuJeuFrame extends JFrame {
         JTextArea textArea = new JTextArea(reglesText);
         textArea.setFont(new Font("Arial", Font.PLAIN, 18));
         textArea.setForeground(Color.WHITE);
+        textArea.setOpaque(false);  // Texte transparent
         textArea.setLineWrap(true);  // Activer le retour automatique à la ligne
         textArea.setWrapStyleWord(true);  // Coupe les mots pour s'adapter à la largeur
 
-        // Centrer le texte dans la zone de texte
-        textArea.setAlignmentX(CENTER_ALIGNMENT);
+        // Ajuster la largeur de la zone de texte
+        textArea.setPreferredSize(new Dimension(800, 400));
 
         // Utiliser un panneau pour organiser les composants
         JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BorderLayout());
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.BLACK);  // Fond du panneau
 
         // Créez un conteneur pour le titre
@@ -61,11 +62,16 @@ public class RegleDuJeuFrame extends JFrame {
         titlePanel.add(titleLabel);
 
         // Ajoutez le conteneur du titre en haut de la fenêtre
-        contentPanel.add(titlePanel, BorderLayout.NORTH);
+        contentPanel.add(titlePanel);
 
-        // Ajouter la zone de texte centrée au centre du panneau
-        contentPanel.add(textArea, BorderLayout.CENTER);
+        // Ajoutez la zone de texte centrée au centre du panneau
+        JPanel textPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        textPanel.setBackground(Color.BLACK);  // Fond du panneau de texte
+        textPanel.add(textArea);
 
+        contentPanel.add(Box.createVerticalGlue());
+        contentPanel.add(textPanel);
+        contentPanel.add(Box.createVerticalGlue());
 
         // Définir le contenu du panneau comme le contenu de la fenêtre
         setContentPane(contentPanel);
@@ -91,7 +97,7 @@ public class RegleDuJeuFrame extends JFrame {
         titleLabel = new JLabel("Règles du jeu");
         titleLabel.setFont(new Font("Impact", Font.BOLD, 40));
         titleLabel.setForeground(new Color(150, 50, 0));
-        titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         add(Box.createVerticalStrut(50));
         add(titleLabel);
@@ -109,7 +115,7 @@ public class RegleDuJeuFrame extends JFrame {
 
     private JButton createButton(String text, ActionListener actionListener) {
         JButton button = new JButton(text);
-        button.setAlignmentX(CENTER_ALIGNMENT);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         button.setFont(new Font("Arial", Font.PLAIN, 18));
         button.setForeground(Color.WHITE);
