@@ -25,24 +25,12 @@ public class Raquette {
         g.fillRect(x, y, largeur, hauteur);
     }
 
-    public int getX() {
-        return x;
-    }
-
     public int getY() {
         return y;
     }
 
-    public int getLargeur() {
-        return largeur;
-    }
-
     public int getHauteur() {
         return hauteur;
-    }
-
-    public void setX(int x) {
-        this.x = x;
     }
 
     public Rectangle getBounds() {

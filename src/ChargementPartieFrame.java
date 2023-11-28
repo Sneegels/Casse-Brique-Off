@@ -118,23 +118,6 @@ public class ChargementPartieFrame extends JFrame {
         }
     }
 
-    private void sauvegarderPartie(Partie partie, String nomPartie) {
-        String cheminDossier = "C:\\Users\\tweek\\Desktop\\Projet Java POO\\Parties";
-        String cheminFichier = cheminDossier + "/" + nomPartie + ".ser";
-
-        File dossier = new File(cheminDossier);
-        if (!dossier.exists()) {
-            dossier.mkdir();
-        }
-
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(cheminFichier))) {
-            oos.writeObject(partie);
-            System.out.println("Partie sauvegardée : " + partie);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private JButton createButton(String text) {
         return createButton(text, null);
     }

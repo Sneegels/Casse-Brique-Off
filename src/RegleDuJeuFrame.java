@@ -142,8 +142,4 @@ public class RegleDuJeuFrame extends JFrame {
 
         return button;
     }
-
-    private JButton createButton(String text) {
-        return createButton(text, null);
-    }
 }

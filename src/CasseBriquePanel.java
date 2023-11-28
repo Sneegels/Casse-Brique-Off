@@ -102,7 +102,7 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         int hauteurBrique = 40;
         int espacement = 5;
         int nombreLignes = 1;
-        int nombreColonnes = 1;
+        int nombreColonnes = 3;
 
         int offsetX = 725;
         int offsetY = 20;
@@ -329,63 +329,6 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
 
         // Afficher un bouton pour recommencer ou quitter
         afficherBoutonsFinPartie("Recommencer", "Quitter");
-    }
-
-    private void afficherDefaite() {
-        JDialog defeatDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Défaite", true);
-        defeatDialog.setUndecorated(true);
-        defeatDialog.setSize(300, 200);
-        defeatDialog.setLocationRelativeTo(this);
-
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g.create();
-
-                // Draw a transparent gradient background from gray to black
-                GradientPaint gradient = new GradientPaint(0, 0, new Color(50, 50, 50, 200),
-                        0, getHeight(), new Color(0, 0, 0, 200));
-                g2d.setPaint(gradient);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-
-                g2d.dispose();
-            }
-        };
-
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        JLabel defeatLabel = new JLabel("Défaite !");
-        defeatLabel.setForeground(Color.RED);
-        defeatLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        defeatLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JButton recommencerButton = createStyledButton("Recommencer");
-        JButton quitterButton = createStyledButton("Quitter");
-
-        recommencerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        quitterButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        recommencerButton.addActionListener(e -> {
-            relancerNouvellePartie();
-            defeatDialog.dispose();
-        });
-
-        quitterButton.addActionListener(e -> {
-            System.exit(0);
-        });
-
-        panel.add(Box.createVerticalGlue());
-        panel.add(defeatLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(recommencerButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(quitterButton);
-        panel.add(Box.createVerticalGlue());
-
-        defeatDialog.setContentPane(panel);
-
-        defeatDialog.setVisible(true);
     }
 
     private void afficherVictoire() {

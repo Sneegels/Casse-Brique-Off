@@ -40,11 +40,6 @@ public class FenetreMenu extends JFrame {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
-    public FenetreMenuPanel getFenetreMenuPanel() {
-        return new FenetreMenuPanel();
-    }
-
 }
 
 class FenetreMenuPanel extends JPanel implements ActionListener {

@@ -139,12 +139,4 @@ public class Balle {
     public int getY() {
         return y;
     }
-
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    public int getDiametre() {
-        return diametre;
-    }
 }
