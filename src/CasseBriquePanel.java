@@ -6,11 +6,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.awt.event.*;
-
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 
 class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, MouseMotionListener {
@@ -21,11 +25,12 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
     private Timer closeTimer;
     private JFrame pauseFrame;
     private Image fondGalaxie;
-    private ImageIcon gameOverIcon;
     private boolean gameOver;
     private long gameOverTime;
     private boolean enPause;
     private PausePanel pausePanel;
+    private JButton nouvellePartieButton;
+    private JButton quitterButton;
 
     public CasseBriquePanel() {
         setLayout(null);
@@ -45,7 +50,9 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         briques = creerBriques();
         centrerBriquesHorizontalement();
         fondGalaxie = new ImageIcon("C:\\Users\\tweek\\Desktop\\Projet Java POO\\images.jpg").getImage();
-        gameOverIcon = new ImageIcon("C:\\Users\\tweek\\Desktop\\Projet Java POO\\game-over-801800.png");
+
+        nouvellePartieButton = createStyledButton("Nouvelle Partie");
+        quitterButton = createStyledButton("Quitter");
 
         addKeyListener(this);
         setFocusable(true);
@@ -90,14 +97,13 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         return frame;
     }
 
-
     private List<Brique> creerBriques() {
         List<Brique> briques = new ArrayList<>();
         int largeurBrique = 80;
         int hauteurBrique = 40;
         int espacement = 5;
-        int nombreLignes = 4;
-        int nombreColonnes = 14;
+        int nombreLignes = 1;
+        int nombreColonnes = 1;
 
         int offsetX = 725;
         int offsetY = 20;
@@ -132,21 +138,11 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
 
             if (balle.getY() > getHeight()) {
                 gameOver = true;
-                gameOverTime = System.currentTimeMillis();
+                afficherGameOver();
+            }
 
-                // Démarrez un Timer pour fermer la fenêtre après 3 secondes
-                Timer closeTimer = new Timer(3000, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                        // Obtenez la fenêtre parente et fermez-la
-                        Window window = SwingUtilities.getWindowAncestor(CasseBriquePanel.this);
-                        if (window != null) {
-                            window.dispose();
-                        }
-                    }
-                });
-                closeTimer.setRepeats(false); // Ne répétez pas le Timer
-                closeTimer.start();
+            if (briques.isEmpty()) {
+                afficherVictoire();
             }
 
             repaint();
@@ -205,7 +201,7 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         }
 
         if (balle.getY() > getHeight()) {
-            afficherGameOver(g);
+            afficherGameOver();
         }
     }
 
@@ -247,36 +243,76 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         // Ne rien faire ici
     }
 
-    private void afficherGameOver(Graphics g) {
-        JLabel gameOverLabel = new JLabel("Game Over");
-        gameOverLabel.setForeground(Color.RED);
-        gameOverLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        gameOverLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gameOverLabel.setVerticalAlignment(SwingConstants.CENTER);
+    private void afficherGameOver() {
+        // Afficher le message "Game Over" avec une police en rouge et centré
+        Graphics g = getGraphics();
+        g.setColor(Color.RED);
+        g.setFont(new Font("Arial", Font.BOLD, 36));
+        String gameOverMessage = "Game Over";
+        FontMetrics fontMetrics = g.getFontMetrics();
+        int x = (getWidth() - fontMetrics.stringWidth(gameOverMessage)) / 2;
+        int y = getHeight() / 2;
+        g.drawString(gameOverMessage, x, y);
 
-        int labelWidth = 200;
-        int labelHeight = 50;
-        int x = (getWidth() - labelWidth) / 2;
-        int y = (getHeight() - labelHeight) / 2;
+        // Afficher un bouton pour recommencer ou quitter
+        afficherBoutonsFinPartie("Recommencer", "Quitter");
+    }
 
-        gameOverLabel.setBounds(x, y, labelWidth, labelHeight);
+    private void afficherVictoire() {
+        JDialog victoryDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Victoire", true);
+        victoryDialog.setUndecorated(true);
+        victoryDialog.setSize(300, 200);
+        victoryDialog.setLocationRelativeTo(this);
 
-        add(gameOverLabel);
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g.create();
 
-        // Mettez à jour les variables de game over
-        gameOver = true;
-        gameOverTime = System.currentTimeMillis();
+                // Draw a transparent gradient background from gray to black
+                GradientPaint gradient = new GradientPaint(0, 0, new Color(50, 50, 50, 200),
+                        0, getHeight(), new Color(0, 0, 0, 200));
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
 
-        // Démarrez un Timer pour fermer la fenêtre après 3 secondes
-        Timer closeTimer = new Timer(3000, arg0 -> {
-            // Obtenez la fenêtre parente et fermez-la
-            Window window = SwingUtilities.getWindowAncestor(CasseBriquePanel.this);
-            if (window != null) {
-                window.dispose();
+                g2d.dispose();
             }
+        };
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel victoryLabel = new JLabel("Victoire !");
+        victoryLabel.setForeground(Color.GREEN);
+        victoryLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        victoryLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton nouvellePartieButton = createStyledButton("Nouvelle Partie");
+        JButton quitterButton = createStyledButton("Quitter");
+
+        nouvellePartieButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        quitterButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        nouvellePartieButton.addActionListener(e -> {
+            relancerNouvellePartie();
+            victoryDialog.dispose();
         });
-        closeTimer.setRepeats(false); // Ne répétez pas le Timer
-        closeTimer.start();
+
+        quitterButton.addActionListener(e -> {
+            System.exit(0);
+        });
+
+        panel.add(Box.createVerticalGlue());
+        panel.add(victoryLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(nouvellePartieButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(quitterButton);
+        panel.add(Box.createVerticalGlue());
+
+        victoryDialog.setContentPane(panel);
+
+        victoryDialog.setVisible(true);
     }
 
     public void reprendrePartie() {
@@ -293,6 +329,102 @@ class CasseBriquePanel extends JPanel implements ActionListener, KeyListener, Mo
         pauseFrame.setVisible(false);
         requestFocusInWindow();
         repaint();
+    }
+
+    private void relancerNouvellePartie() {
+        removeAll();
+        revalidate();
+
+        balle = new Balle(200, 500, 20, new Color(195, 223, 225));
+        raquette = new Raquette(getWidth() / 2 - 50, getHeight() - 100, 175, 20, new Color(224, 225, 79));
+        briques = creerBriques();
+        centrerBriquesHorizontalement();
+
+        enPause = false;
+        gameOver = false;
+        gameOverTime = 0;
+
+        timer.start();
+        repaint();
+    }
+
+    private void afficherBoutonsFinPartie(String labelRecommencer, String labelQuitter) {
+        JButton recommencerButton = createStyledButton(labelRecommencer);
+        JButton quitterButton = createStyledButton(labelQuitter);
+
+        recommencerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        quitterButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        recommencerButton.addActionListener(e -> {
+            relancerNouvellePartie();
+        });
+
+        quitterButton.addActionListener(e -> {
+            System.exit(0);
+        });
+
+        afficherComposantsFinPartie(recommencerButton, quitterButton);
+    }
+
+    private void afficherComposantsFinPartie(JComponent... composants) {
+        JDialog gameOverDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Fin de partie", true);
+        gameOverDialog.setUndecorated(true);
+        gameOverDialog.setSize(300, 200);
+        gameOverDialog.setLocationRelativeTo(this);
+
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g.create();
+
+                // Draw a transparent gradient background from gray to black
+                GradientPaint gradient = new GradientPaint(0, 0, new Color(50, 50, 50, 200),
+                        0, getHeight(), new Color(0, 0, 0, 200));
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+
+                g2d.dispose();
+            }
+        };
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        for (JComponent composant : composants) {
+            panel.add(Box.createVerticalGlue());
+            panel.add(composant);
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+
+        gameOverDialog.setContentPane(panel);
+
+        gameOverDialog.setVisible(true);
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.PLAIN, 18));
+        button.setForeground(Color.WHITE);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+
+        Border line = new LineBorder(Color.WHITE);
+        Border margin = new EmptyBorder(5, 15, 5, 15);
+        Border compound = new CompoundBorder(line, margin);
+        button.setBorder(compound);
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setForeground(Color.RED);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setForeground(Color.WHITE);
+            }
+        });
+
+        return button;
     }
 
     public static void main(String[] args) {
